@@ -1,19 +1,18 @@
 package com.andymartinez1.expense.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import com.andymartinez1.expense.dto.ExpenseDto;
 import com.andymartinez1.expense.entity.Category;
 import com.andymartinez1.expense.entity.Expense;
+import com.andymartinez1.expense.exceptions.ResourceNotFoundException;
 import com.andymartinez1.expense.mapper.ExpenseMapper;
 import com.andymartinez1.expense.repository.CategoryRepository;
 import com.andymartinez1.expense.repository.ExpenseRepository;
 import com.andymartinez1.expense.service.ExpenseService;
-
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -31,7 +30,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public ExpenseDto getExpenseById(Long expenseId) {
         Expense expense = expenseRepository.findById(expenseId)
-                .orElseThrow(() -> new RuntimeException("Expense not found with id: " + expenseId));
+                .orElseThrow(() -> new ResourceNotFoundException("Expense not found with id: " + expenseId));
         return ExpenseMapper.mapToExpenseDto(expense);
     }
 
@@ -45,14 +44,14 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public ExpenseDto updateExpense(Long expenseId, ExpenseDto expenseDto) {
         Expense expense = expenseRepository.findById(expenseId)
-                .orElseThrow(() -> new RuntimeException("Expense not found with id: " + expenseId));
+                .orElseThrow(() -> new ResourceNotFoundException("Expense not found with id: " + expenseId));
 
         expense.setAmount(expenseDto.amount());
         expense.setExpenseDate(expenseDto.expenseDate());
         if (expenseDto.categoryDto() != null) {
             Category category = categoryRepository.findById(expenseDto.categoryDto().id())
                     .orElseThrow(
-                            () -> new RuntimeException("Expense not found with id: " + expenseDto.categoryDto().id()));
+                            () -> new ResourceNotFoundException("Expense not found with id: " + expenseDto.categoryDto().id()));
 
             expense.setCategory(category);
         }
@@ -63,7 +62,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public void deleteExpense(Long expenseId) {
         Expense expense = expenseRepository.findById(expenseId)
-                .orElseThrow(() -> new RuntimeException("Expense not found with id: " + expenseId));
+                .orElseThrow(() -> new ResourceNotFoundException("Expense not found with id: " + expenseId));
         expenseRepository.delete(expense);
     }
 }

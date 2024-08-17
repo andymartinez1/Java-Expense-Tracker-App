@@ -2,6 +2,7 @@ package com.andymartinez1.expense.service.impl;
 
 import com.andymartinez1.expense.dto.CategoryDto;
 import com.andymartinez1.expense.entity.Category;
+import com.andymartinez1.expense.exceptions.ResourceNotFoundException;
 import com.andymartinez1.expense.mapper.CategoryMapper;
 import com.andymartinez1.expense.repository.CategoryRepository;
 import com.andymartinez1.expense.service.CategoryService;
@@ -26,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto getCategoryById(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + categoryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
         return CategoryMapper.mapToCategoryDto(category);
     }
 
@@ -40,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + categoryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
 
         category.setName(categoryDto.name());
         Category updatedCategory = categoryRepository.save(category);
@@ -50,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + categoryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
         categoryRepository.delete(category);
     }
 }
