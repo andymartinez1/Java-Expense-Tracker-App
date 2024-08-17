@@ -34,8 +34,7 @@ public class Expense {
     @Column(nullable = false)
     private LocalDate expenseDate;
 
-    // many to one relationship - Many expenses belongs to one category
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false) // foreign key in expenses table
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 }
